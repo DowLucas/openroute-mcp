@@ -350,7 +350,7 @@ async def get_reachable_area(
     route_type: RouteType,
     range_type: RangeType,
     area_range: list[int] = [300, 200],  # noqa: B006
-) -> PoisResponse:
+) -> dict[str, Any]:
     """Computes the area that can be reached within a given time or distance from one or more starting points.
 
     Args:
@@ -378,8 +378,9 @@ async def get_reachable_area(
         json=request_body,
     )
     response.raise_for_status()
-    # TODO: fix the type
-    result: PoisResponse = response.json()
+    # Isochrones return a GeoJSON FeatureCollection with polygon geometries —
+    # distinct from the POIs schema, so return the raw dict.
+    result: dict[str, Any] = response.json()
     return result
 
 
