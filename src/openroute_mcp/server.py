@@ -150,11 +150,15 @@ async def create_route_from_to(
         # NOTE: store the generated route file to enable downloading it via a resource link later
         with open(os.path.join(settings.data_folder, gpx_filename), "w", encoding="utf-8") as f:
             f.write(pretty_xml)
-        # Generate image and HTML for the route
+        # Generate image and HTML for the route (only when their flags are not disabled)
         img_filename = f"{route_filename}.png"
         html_filename = f"{route_filename}.html"
-        img_filepath = gpx_to_img(response.text, img_filename)
-        html_filepath = gpx_to_html(response.text, html_filename)
+        img_filepath = (
+            gpx_to_img(response.text, img_filename, settings.data_folder) if not settings.no_img else ""
+        )
+        html_filepath = (
+            gpx_to_html(response.text, html_filename, settings.data_folder) if not settings.no_html else ""
+        )
 
         # Add PNG image if generated
         if not settings.no_img and img_filepath:
